@@ -17,7 +17,7 @@ app.get('/servicos', (req, res) => {
 
 app.post('/servicos', (req, res) => {
     let ob = {
-        id: dados.length + 1,
+        id: dados.length + 2,
         nome: req.body.nome,
         descricao: req.body.descricao,
         preco: req.body.preco,
