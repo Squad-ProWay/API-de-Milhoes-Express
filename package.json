@@ -1,12 +1,12 @@
 {
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "pg": "^8.7.3"
   },
   "name": "api-de-milhoes-express",
   "version": "1.0.0",
   "main": "dbservico.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
