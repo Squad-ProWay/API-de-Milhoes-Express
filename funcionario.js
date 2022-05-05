@@ -9,7 +9,8 @@ app.use(cors())
 
 var pg = require('pg')
 
-var consString = "postgres://xojnkzgfeeyuvq:93357ef793a5e84a1d309746fbfd0d2bb4b2889776baf69bf8ea861947980a87@ec2-18-210-64-223.compute-1.amazonaws.com:5432/dbjsth5mmv771g"
+var consString = process.env.DATABASE_URL;
+var port = process.env.PORT;
 
 const pool = new pg.Pool({ connectionString: consString, ssl: { rejectUnauthorized: false } })
 
@@ -128,4 +129,4 @@ app.put('/funcionarios/:id', (req, res) => {
     })
 })
 
-app.listen(8081, () => console.log('Aplicação em execução na url http://localhost:8081'))
+app.listen(port, () => console.log('Aplicação em execução na url http://localhost:8081'))
