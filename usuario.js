@@ -41,5 +41,35 @@ app.get('/usuarios/:idusuario', (req, res) => {
     res.status(200).send(usuarioRetornado)
 })
 
+app.delete('/usuarios/:idusuario', (req, res) => {
+    let idusuario = req.params.idusuario
+    let posicao = 0
+    for (let user of dados) {
+        if (user.id == idusuario) {
+            break
+        }
+        posicao++
+    }
+    dados.splice(posicao, 1)
+    res.status(204).send()
+
+})
+
+app.put('/usuarios/:idusuario', (req, res) => {
+    let idusuario = req.params.idusuario;
+    let usuarioAlterado = {}
+    for (let user of dados) {
+        if (user.id == idusuario) {
+            user.nome = req.body.nome
+            user.email = req.body.email
+            user.cpf = req.body.cpf
+            user.senha = req.body.senha
+            user.perfil = req.body.perfil
+            usuarioAlterado = user
+        }
+    }
+    res.status(200).send(usuarioAlterado)
+})
+
 
 app.listen(8081, () => console.log('Aplicação em execução na url http://localhost:8081'))

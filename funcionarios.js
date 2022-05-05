@@ -56,18 +56,6 @@ app.get('/funcionarios/:idfuncionario', (req, res) => {
     res.status(200).send(funcionarioRetornado)
 })
 
-app.delete('/funcionarios/:idfuncionario', (req, res) => {
-    let idfuncionario = req.params.idfuncionario
-    let posicao = 0
-    for (let func of dados) {
-        if (func.id == idfuncionario) {
-            break
-        }
-        posicao++
-    }
-    dados.splice(posicao, 1)
-    res.status(204).send()
 
-})
 
 app.listen(8081, () => console.log('Aplicação em execução na url http://localhost:8081'))
