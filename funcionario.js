@@ -9,7 +9,9 @@ app.use(cors())
 
 var pg = require('pg')
 
-var consString = "postgres://xojnkzgfeeyuvq:93357ef793a5e84a1d309746fbfd0d2bb4b2889776baf69bf8ea861947980a87@ec2-18-210-64-223.compute-1.amazonaws.com:5432/dbjsth5mmv771g"
+//lembrar de trocar pelo seu link do seu BD
+
+var consString = "postgres://vivupmyvfgnjjm:2f2ea8d79190de6f063ada7c6031e5f123cdb17ae9fc6066ebe08ecba10fbf07@ec2-18-210-64-223.compute-1.amazonaws.com:5432/dabi4uakl6ohbp"
 
 const pool = new pg.Pool({ connectionString: consString, ssl: { rejectUnauthorized: false } })
 
