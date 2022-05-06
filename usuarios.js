@@ -48,7 +48,7 @@ app.post('/usuarios', (req, res) => {
                     })
                 }
                 var sql = 'insert into usuarios (nome, email, cpf, senha, perfil) values ($1, $2, $3, $4, $5)'
-                client.query(sql, [req.body.nome, req.body.email, req.body.cpf, hash, req.body.perfil], (error, result) => {
+                client.query(sql, [req.body.nome, req.body.email, req.body.cpf, req.body.senha, req.body.perfil], (error, result) => {
                     if (error) {
                         return res.status(403).send('Operação não permitida')
                     }

@@ -9,7 +9,7 @@ app.use(cors())
 
 var pg = require('pg')
 
-var consString = ""
+var consString = process.env.DATABASE_URL
 
 const pool = new pg.Pool({ connectionString: consString, ssl: { rejectUnauthorized: false } })
 
@@ -24,12 +24,43 @@ app.get('/', (req, res) => {
 
 
 
+app.post('/horarios', (req, res) => {
+    pool.connect((err, client) => {
+        if (err) {
+            return res.status(401).send('Conexão não autorizada!')
+        }
+
+        client.query('select * from horarios where email = $1', [req.body.email], (error, result) => {
+            if (error) {
+                return res.status(401).send('Operação não autorizada')
+            }
+
+            if (result.rowCount > 0) {
+                return res.status(200).send('Você já realizou agendamento!')
+            }
+
+            var sql = 'insert into horarios (nome, telefone, email, dia, horario, procedimento, observacao) values ($1, $2, $3, $4, $5, $6, $7)'
+            client.query(sql, [req.body.nome, req.body.telefone, req.body.email, req.body.dia, req.body.horario, req.body.procedimento, req.body.observacao], (error, result) => {
+                if (error) {
+                    return res.status(403).send('Operação não permitida!')
+                }
+                res.status(201).send({
+                    mensagem: 'Agendamento criado com sucesso!',
+                    status: 201
+                })
+            })
+
+        })
+    })
+})
+
+
 app.get('/horarios', (req, res) => {
     pool.connect((err, client) => {
         if (err) {
             res.status(401).send('Conexão não autorizada!')
         }
-        client.query('SELECT * FROM horarios', (error, result) => {
+        client.query('select * from horarios', (error, result) => {
             if (error) {
                 return res.status(401).send('Não foi possível realizar a consulta!')
             }
@@ -38,52 +69,12 @@ app.get('/horarios', (req, res) => {
     })
 })
 
-
-
-app.post('/horarios', (req, res) => {
-    pool.connect((err, client) => {
-        if (err) {
-            return res.status(401).send('Conexão não autorizada!')
-        }
-        //AQUI PODEMOS MODIFICAR A QUERY PARA PODER VERIFICAR SE EXISTE DATA E HORÁRIOS IGUAIS
-        /** client.query('SELECT * FROM horarios WHERE id = $1', [req.body.id], (error, result) => {
-        if (error) {
-        return res.status(401).send('Operação não autorizada')
-        }
-        
-        
-        
-        if (result.rowCount > 0) {
-        return res.status(200).send('Serviço já cadastrado!')
-        }*/
-
-
-
-        var sql = 'INSERT INTO horarios (nome, telefone, email, dia, horario, procedimento, obervacao) values ($1, $2, $3, $4, $5, $6, $7)'
-        client.query(sql, [req.body.nome, req.body.telefone, req.body.email, req.body.dia, req.body.horario, req.body.procedimento, req.body.obervacao], (error, result) => {
-            if (error) {
-                return res.status(403).send('Operação não permitida!')
-            }
-            res.status(201).send({
-                mensagem: 'Serviço criado com sucesso!',
-                status: 201
-            })
-        })
-
-
-
-    })
-})
-
-
-
-
 app.get('/horarios/:id', (req, res) => {
     pool.connect((err, client) => {
         if (err) {
             return res.status(401).send('Conexão não autorizada!')
         }
-        client.query('select * from servicos where id = $1', [req.params.id], (error, result) => {
+        client.query('select * from horarios where id = $1', [req.params.id], (error, result) => {
             if (error) {
                 return res.status(401).send('Operação não autorizada!')
             }
@@ -92,7 +83,22 @@ app.get('/horarios/:id', (req, res) => {
     })
 })
 
-
+app.delete('/horarios/:id', (req, res) => {
+    pool.connect((err, client) => {
+        if (err) {
+            return res.status(401).send('Conexão não autorizada!')
+        }
+        client.query('delete from horarios where id = $1', [req.params.id], (error, result) => {
+            if (error) {
+                return res.status(401).send('Operação não autorizada!')
+            }
+            res.status(201).send({
+                mensagem: 'Agendamento deletado com sucesso!',
+                status: 201
+            })
+        })
+    })
+})
 
 app.put('/horarios/:id', (req, res) => {
     //res.status(200).send('Rota update criada')
@@ -101,48 +107,25 @@ app.put('/horarios/:id', (req, res) => {
             return res.status(401).send('Conexão não autorizada!')
         }
 
-
-
-        client.query('select * from servicos where id = $1', [req.params.id], (error, result) => {
+        client.query('select * from horarios where id = $1', [req.params.id], (error, result) => {
             if (error) {
                 return res.status(401).send('Operação não autorizada!')
             }
             // update usuarios set senha = $1, perfil = $2 where email=$3
             if (result.rowCount > 0) {
-                var sql = 'update servicos set nome = $1, descricao = $2, preco = $3, duracao = $4, status = $5 where id = $6'
-                let valores = [req.body.nome, req.body.descricao, req.body.preco, req.body.duracao, req.body.status, req.body.id]
+                var sql = 'update horarios set nome = $1, telefone = $2, email = $3, dia = $4, horario = $5, procedimento = $6, observacao = $7 where id = $8'
+                let valores = [req.body.nome, req.body.telefone, req.body.email, req.body.dia, req.body.horario, req.body.procedimento, req.body.observacao, req.body.id]
                 client.query(sql, valores, (error2, result2) => {
                     if (error2) {
                         return res.status(401).send('Operação não permitida!')
                     }
                     if (result2.rowCount > 0) {
-                        return res.status(200).send('Servico alterado com sucesso!')
+                        return res.status(200).send('Agendamento alterado com sucesso!')
                     }
                 })
             } else
-                res.status(200).send('Serviço não encontrado na base de dados!')
+                res.status(200).send('Agendamento não encontrado na base de dados!')
 
-
-
-        })
-    })
-})
-
-
-
-app.delete('/horarios/:id', (req, res) => {
-    pool.connect((err, client) => {
-        if (err) {
-            return res.status(401).send('Conexão não autorizada!')
-        }
-        client.query('delete from servicos where id = $1', [req.params.id], (error, result) => {
-            if (error) {
-                return res.status(401).send('Operação não autorizada!')
-            }
-            res.status(201).send({
-                mensagem: 'Serviço deletado com sucesso!',
-                status: 201
-            })
         })
     })
 })
