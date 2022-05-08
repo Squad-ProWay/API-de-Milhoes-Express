@@ -68,7 +68,7 @@ app.get('/funcionarios', (req, res) => {
     })
 })
 
-app.get('/servicos/:id', (req, res) => {
+app.get('/funcionarios/:id', (req, res) => {
     pool.connect((err, client) => {
         if (err) {
             return res.status(401).send('Conexão não autorizada!')
