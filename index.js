@@ -3,7 +3,7 @@ const app = express()
 const port = 8081
 
 var rotasServico = require('./servico')
-var rotasFuncionario = require('./funcionarios')
+var rotasFuncionario = require('./funcionario')
 var rotasHorarios = require('./horarioCliente')
 
 //Invoca o Middleware
