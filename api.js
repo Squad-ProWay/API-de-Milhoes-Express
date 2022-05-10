@@ -16,7 +16,7 @@ var pg = require('pg')
 var consString = process.env.DATABASE_URL;
 var port = process.env.PORT;
 
-const pool = new pg.Pool({ connectionString: consString, ssl: { rejectUnauthorized: false } })
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false }})
 
 
 /************************USUARIO***************************/
@@ -537,4 +537,4 @@ app.put('/funcionarios/:id', (req, res) => {
     })
 })
 
-app.listen(port, () => console.log(`Aplicação em execução na url http://localhost:${port}`))
+app.listen(process.env.PORT || 8081, () => console.log('Servidor funcionando'))
