@@ -145,11 +145,11 @@ app.put('/usuarios/:id', (req, res) => {
 app.post('/usuarios/login', (req, res) => {
     pool.connect((err, client) => {
         if (err) {
-            return res.status(401).send("Conexão não autorizada")
+            return res.status(401).send({message: "Conexão não autorizada"})
         }
         client.query('select * from usuarios where email = $1', [req.body.email], (error, result) => {
             if (error) {
-                return res.status(401).send('operação não permitida')
+                return res.status(401).send({message: "operação não permitida"})
             }
             if (result.rowCount > 0) {
                 //cripotgrafar a senha enviada e comparar com a recuperada do banco
